@@ -251,6 +251,25 @@
 -   Snap token didapatkan saat checkout dan digunakan untuk pembayaran online.
 -   Kolom `payment_token` pada tabel `orders` menyimpan token Snap dari Midtrans.
 
+### Detail Pesanan
+
+-   **GET** `/api/order-detail/{orderId}`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "order_number": "ORD-XXXXXX",
+        "status": "processing",
+        "grand_total": 100000,
+        "payment_token": "snap_token_midtrans",
+        "items": [ ... ]
+    }
+    ```
+-   **Deskripsi:**
+    -   Mengembalikan detail pesanan milik user yang sedang login, beserta daftar itemnya.
+    -   Jika order tidak ditemukan atau bukan milik user, akan mengembalikan error 404.
+
 ---
 
 ## Catatan

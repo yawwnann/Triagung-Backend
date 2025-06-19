@@ -24,3 +24,4 @@ Route::middleware('auth:api')->post('addresses', [AddressController::class, 'sto
 Route::middleware('auth:api')->put('addresses/{id}', [AddressController::class, 'update']);
 Route::middleware('auth:api')->delete('addresses/{id}', [AddressController::class, 'destroy']);
 Route::middleware('auth:api')->post('checkout', [OrderController::class, 'checkout']);
+Route::middleware('auth:api')->get('order-detail/{orderId}', [OrderController::class, 'orderDetail']);

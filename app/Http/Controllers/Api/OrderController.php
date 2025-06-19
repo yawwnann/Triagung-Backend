@@ -173,4 +173,18 @@ class OrderController extends Controller
             'snap_token' => $snapToken,
         ]);
     }
+
+    // API untuk melihat detail pesanan
+    public function orderDetail(Request $request, $orderId)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $order = Order::with('items')
+            ->where('id', $orderId)
+            ->where('user_id', $user->id)
+            ->first();
+        if (!$order) {
+            return response()->json(['error' => 'Pesanan tidak ditemukan'], 404);
+        }
+        return response()->json($order);
+    }
 }
