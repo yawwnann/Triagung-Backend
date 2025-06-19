@@ -16,3 +16,5 @@ Route::middleware('auth:api')->get('me', [AuthController::class, 'me']);
 Route::middleware('auth:api')->get('my-orders', [OrderController::class, 'myOrders']);
 Route::middleware('auth:api')->get('cart', [OrderController::class, 'cart']);
 Route::middleware('auth:api')->post('cart', [OrderController::class, 'storeCart']);
+Route::middleware('auth:api')->patch('cart/{item}', [OrderController::class, 'updateCartItem']);
+Route::middleware('auth:api')->delete('cart/{item}', [OrderController::class, 'deleteCartItem']);

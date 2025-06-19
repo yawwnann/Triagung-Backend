@@ -11,13 +11,13 @@
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   [Simple, fast routing engine](https://laravel.com/docs/routing).
+-   [Powerful dependency injection container](https://laravel.com/docs/container).
+-   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+-   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+-   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+-   [Robust background job processing](https://laravel.com/docs/queues).
+-   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -35,14 +35,14 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **[Vehikl](https://vehikl.com)**
+-   **[Tighten Co.](https://tighten.co)**
+-   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+-   **[64 Robots](https://64robots.com)**
+-   **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+-   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-   **[Redberry](https://redberry.international/laravel-development)**
+-   **[Active Logic](https://activelogic.com)**
 
 ## Contributing
 
@@ -59,3 +59,134 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Trijaya Agung Backend API
+
+## Authentication
+
+### Register
+
+-   **POST** `/api/register`
+-   **Body:**
+    ```json
+    {
+        "name": "Nama User",
+        "email": "user@email.com",
+        "password": "password"
+    }
+    ```
+-   **Response:**
+    ```json
+    { "token": "..." }
+    ```
+
+### Login
+
+-   **POST** `/api/login`
+-   **Body:**
+    ```json
+    {
+        "email": "user@email.com",
+        "password": "password"
+    }
+    ```
+-   **Response:**
+    ```json
+    { "token": "..." }
+    ```
+
+### Get Current User
+
+-   **GET** `/api/me`
+-   **Headers:** `Authorization: Bearer {token}`
+
+---
+
+## Produk & Kategori
+
+### List Produk
+
+-   **GET** `/api/produks`
+
+### List Kategori Produk
+
+-   **GET** `/api/kategoris`
+
+### List Banner
+
+-   **GET** `/api/banners`
+
+---
+
+## Keranjang (Cart)
+
+### Lihat Keranjang
+
+-   **GET** `/api/cart`
+-   **Headers:** `Authorization: Bearer {token}`
+
+### Tambah/Update Keranjang
+
+-   **POST** `/api/cart`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    {
+        "items": [
+            { "product_id": 1, "quantity": 2 },
+            { "product_id": 2, "quantity": 1 }
+        ]
+    }
+    ```
+
+### Edit Item Keranjang
+
+-   **PATCH** `/api/cart/{item_id}`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    { "quantity": 3 }
+    ```
+
+### Hapus Item Keranjang
+
+-   **DELETE** `/api/cart/{item_id}`
+-   **Headers:** `Authorization: Bearer {token}`
+
+---
+
+## Order
+
+### Checkout (Buat Order & Pembayaran)
+
+-   **POST** `/api/orders` _(belum tersedia, rencana integrasi Midtrans)_
+
+### Daftar Pesanan User
+
+-   **GET** `/api/my-orders`
+-   **Headers:** `Authorization: Bearer {token}`
+
+### Detail Pesanan
+
+-   **GET** `/api/orders/{order_id}` _(disarankan untuk ditambah)_
+-   **Headers:** `Authorization: Bearer {token}`
+
+---
+
+## Alamat (Address)
+
+_(disarankan untuk ditambah)_
+
+-   **GET/POST/PUT/DELETE** `/api/addresses`
+
+---
+
+## Catatan
+
+-   Semua endpoint yang butuh login harus pakai header: `Authorization: Bearer {token}`
+-   Untuk pembayaran, integrasi Midtrans akan menambah endpoint baru.
+-   Untuk endpoint admin, gunakan middleware admin (belum tersedia di API publik).
+
+---
+
+**Silakan hubungi tim backend untuk pertanyaan lebih lanjut atau request endpoint tambahan!**

@@ -78,4 +78,43 @@ class OrderController extends Controller
 
         return response()->json($order->load('items'), 201);
     }
+
+    public function updateCartItem(Request $request, $itemId)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $item = \App\Models\OrderItem::whereHas('order', function ($q) use ($user) {
+            $q->where('user_id', $user->id)->where('status', 'pending');
+        })->findOrFail($itemId);
+
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $item->quantity = $request->quantity;
+        $item->subtotal = $item->price * $request->quantity;
+        $item->save();
+
+        // Update grand_total order
+        $order = $item->order;
+        $order->total_amount = $order->items()->sum('subtotal');
+        $order->grand_total = $order->total_amount;
+        $order->save();
+
+        return response()->json($item->fresh(['order']));
+    }
+
+    public function deleteCartItem(Request $request, $itemId)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $item = \App\Models\OrderItem::whereHas('order', function ($q) use ($user) {
+            $q->where('user_id', $user->id)->where('status', 'pending');
+        })->findOrFail($itemId);
+        $order = $item->order;
+        $item->delete();
+        // Update grand_total order
+        $order->total_amount = $order->items()->sum('subtotal');
+        $order->grand_total = $order->total_amount;
+        $order->save();
+        return response()->json(['success' => true]);
+    }
 }
