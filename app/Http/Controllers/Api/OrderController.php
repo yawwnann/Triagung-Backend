@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Midtrans\Snap;
 
 class OrderController extends Controller
 {
@@ -41,7 +42,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'User belum memiliki alamat.'], 422);
         }
 
-        $order = \App\Models\Order::create([
+        $order = Order::create([
             'user_id' => $user->id,
             'address_id' => $addressId,
             'order_number' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
@@ -116,5 +117,60 @@ class OrderController extends Controller
         $order->grand_total = $order->total_amount;
         $order->save();
         return response()->json(['success' => true]);
+    }
+
+    // API checkout cart
+    public function checkout(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $request->validate([
+            'address_id' => 'required|exists:addresses,id',
+        ]);
+        $addressId = $request->address_id;
+        // Pastikan address milik user
+        $address = $user->addresses()->where('id', $addressId)->first();
+        if (!$address) {
+            return response()->json(['error' => 'Alamat tidak valid.'], 422);
+        }
+        // Ambil order pending milik user
+        $order = Order::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->orderByDesc('created_at')
+            ->first();
+        if (!$order) {
+            return response()->json(['error' => 'Tidak ada cart yang bisa di-checkout.'], 404);
+        }
+        // Update address jika berbeda
+        if ($order->address_id != $addressId) {
+            $order->address_id = $addressId;
+        }
+        $order->status = 'processing';
+        $order->save();
+
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = config('midtrans.is_production');
+        \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+
+        // Data untuk Midtrans
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->order_number,
+                'gross_amount' => (int) $order->grand_total,
+            ],
+            'customer_details' => [
+                'first_name' => $user->name,
+                'email' => $user->email,
+            ],
+        ];
+        $snapToken = Snap::getSnapToken($params);
+        $order->payment_token = $snapToken;
+        $order->save();
+
+        return response()->json([
+            'order' => $order->load('items'),
+            'snap_token' => $snapToken,
+        ]);
     }
 }

@@ -15,7 +15,7 @@ class OrderSeeder extends Seeder
     public function run(): void
     {
         // Ambil hanya user dengan role 'user' (pelanggan)
-        $users = \App\Models\User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->get();
         $produks = Produk::all();
         if ($produks->isEmpty()) {
             if (method_exists($this, 'command') && $this->command) {

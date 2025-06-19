@@ -194,19 +194,62 @@
 
 ## Pesanan
 
-### Checkout (Buat Pesanan & Pembayaran)
-
--   **POST** `/api/orders` _(belum tersedia, rencana integrasi Midtrans)_
-
-### Daftar Pesanan Pengguna
+### Lihat Daftar Pesanan Saya
 
 -   **GET** `/api/my-orders`
 -   **Headers:** `Authorization: Bearer {token}`
+-   **Response:**
+    ```json
+    [
+        {
+            "id": 1,
+            "order_number": "ORD-XXXXXX",
+            "status": "processing",
+            "grand_total": 100000,
+            "items": [ ... ]
+        }
+    ]
+    ```
 
-### Detail Pesanan
+### Checkout (Buat Pesanan & Pembayaran)
 
--   **GET** `/api/orders/{order_id}` _(disarankan untuk ditambah)_
+-   **POST** `/api/checkout`
 -   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    {
+        "address_id": 1
+    }
+    ```
+-   **Response:**
+    ```json
+    {
+        "order": {
+            "id": 1,
+            "order_number": "ORD-XXXXXX",
+            "status": "processing",
+            "grand_total": 100000,
+            "payment_token": "snap_token_midtrans",
+            "items": [ ... ]
+        },
+        "snap_token": "snap_token_midtrans"
+    }
+    ```
+-   **Deskripsi:**
+    -   Mengubah status order 'pending' menjadi 'processing' dan mengatur alamat pengiriman.
+    -   Menghasilkan Snap Token dari Midtrans untuk pembayaran.
+    -   Snap token digunakan di frontend untuk menampilkan popup pembayaran.
+
+### Integrasi Midtrans
+
+-   Konfigurasi Midtrans diambil dari file `.env`:
+    ```env
+    MIDTRANS_SERVER_KEY=your_server_key
+    MIDTRANS_CLIENT_KEY=your_client_key
+    MIDTRANS_IS_PRODUCTION=false
+    ```
+-   Snap token didapatkan saat checkout dan digunakan untuk pembayaran online.
+-   Kolom `payment_token` pada tabel `orders` menyimpan token Snap dari Midtrans.
 
 ---
 
