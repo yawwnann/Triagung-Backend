@@ -1,6 +1,16 @@
 # Dokumentasi API Backend Trijaya Agung
 
-## Autentikasi
+## Daftar Isi
+
+1. [Autentikasi](#autentikasi)
+2. [Produk & Kategori](#produk--kategori)
+3. [Keranjang Belanja](#keranjang-belanja)
+4. [Alamat Pengiriman](#alamat-pengiriman)
+5. [Pesanan & Pembayaran](#pesanan--pembayaran)
+
+---
+
+## 1. Autentikasi
 
 ### Registrasi
 
@@ -40,7 +50,7 @@
 
 ---
 
-## Produk & Kategori
+## 2. Produk & Kategori
 
 ### Daftar Produk
 
@@ -56,7 +66,7 @@
 
 ---
 
-## Keranjang Belanja
+## 3. Keranjang Belanja
 
 ### Lihat Keranjang
 
@@ -93,7 +103,7 @@
 
 ---
 
-## Alamat Pengiriman
+## 4. Alamat Pengiriman
 
 ### Lihat Daftar Alamat
 
@@ -192,7 +202,7 @@
 
 ---
 
-## Pesanan
+## 5. Pesanan & Pembayaran
 
 ### Lihat Daftar Pesanan Saya
 
@@ -240,17 +250,6 @@
     -   Menghasilkan Snap Token dari Midtrans untuk pembayaran.
     -   Snap token digunakan di frontend untuk menampilkan popup pembayaran.
 
-### Integrasi Midtrans
-
--   Konfigurasi Midtrans diambil dari file `.env`:
-    ```env
-    MIDTRANS_SERVER_KEY=your_server_key
-    MIDTRANS_CLIENT_KEY=your_client_key
-    MIDTRANS_IS_PRODUCTION=false
-    ```
--   Snap token didapatkan saat checkout dan digunakan untuk pembayaran online.
--   Kolom `payment_token` pada tabel `orders` menyimpan token Snap dari Midtrans.
-
 ### Detail Pesanan
 
 -   **GET** `/api/order-detail/{orderId}`
@@ -269,6 +268,17 @@
 -   **Deskripsi:**
     -   Mengembalikan detail pesanan milik user yang sedang login, beserta daftar itemnya.
     -   Jika order tidak ditemukan atau bukan milik user, akan mengembalikan error 404.
+
+### Integrasi Midtrans
+
+-   Konfigurasi Midtrans diambil dari file `.env`:
+    ```env
+    MIDTRANS_SERVER_KEY=your_server_key
+    MIDTRANS_CLIENT_KEY=your_client_key
+    MIDTRANS_IS_PRODUCTION=false
+    ```
+-   Snap token didapatkan saat checkout dan digunakan untuk pembayaran online.
+-   Kolom `payment_token` pada tabel `orders` menyimpan token Snap dari Midtrans.
 
 ---
 
