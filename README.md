@@ -60,17 +60,17 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-# Trijaya Agung Backend API
+# Dokumentasi API Backend Trijaya Agung
 
-## Authentication
+## Autentikasi
 
-### Register
+### Registrasi
 
 -   **POST** `/api/register`
 -   **Body:**
     ```json
     {
-        "name": "Nama User",
+        "name": "Nama Pengguna",
         "email": "user@email.com",
         "password": "password"
     }
@@ -95,7 +95,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
     { "token": "..." }
     ```
 
-### Get Current User
+### Info Pengguna Saat Ini
 
 -   **GET** `/api/me`
 -   **Headers:** `Authorization: Bearer {token}`
@@ -104,21 +104,21 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Produk & Kategori
 
-### List Produk
+### Daftar Produk
 
 -   **GET** `/api/produks`
 
-### List Kategori Produk
+### Daftar Kategori Produk
 
 -   **GET** `/api/kategoris`
 
-### List Banner
+### Daftar Banner
 
 -   **GET** `/api/banners`
 
 ---
 
-## Keranjang (Cart)
+## Keranjang Belanja
 
 ### Lihat Keranjang
 
@@ -155,13 +155,112 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ---
 
-## Order
+## Alamat Pengiriman
 
-### Checkout (Buat Order & Pembayaran)
+### Lihat Daftar Alamat
+
+-   **GET** `/api/addresses`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Response:**
+    ```json
+    [
+        {
+            "id": 1,
+            "label": "Rumah",
+            "recipient_name": "Budi Santoso",
+            "phone": "08123456789",
+            "address": "Jl. Mawar No. 1",
+            "province": "Jawa Timur",
+            "city": "Surabaya",
+            "district": "Tegalsari",
+            "postal_code": "60100",
+            "is_default": true,
+            "notes": "Alamat utama"
+        }
+    ]
+    ```
+
+### Tambah Alamat
+
+-   **POST** `/api/addresses`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    {
+        "label": "Rumah",
+        "recipient_name": "Budi Santoso",
+        "phone": "08123456789",
+        "address": "Jl. Mawar No. 1",
+        "province": "Jawa Timur",
+        "city": "Surabaya",
+        "district": "Tegalsari",
+        "postal_code": "60100",
+        "is_default": true,
+        "notes": "Alamat utama"
+    }
+    ```
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "label": "Rumah",
+        "recipient_name": "Budi Santoso",
+        "phone": "08123456789",
+        "address": "Jl. Mawar No. 1",
+        "province": "Jawa Timur",
+        "city": "Surabaya",
+        "district": "Tegalsari",
+        "postal_code": "60100",
+        "is_default": true,
+        "notes": "Alamat utama"
+    }
+    ```
+
+### Edit Alamat
+
+-   **PUT** `/api/addresses/{id}`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    {
+        "phone": "08129876543"
+    }
+    ```
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "label": "Rumah",
+        "recipient_name": "Budi Santoso",
+        "phone": "08129876543",
+        "address": "Jl. Mawar No. 1",
+        "province": "Jawa Timur",
+        "city": "Surabaya",
+        "district": "Tegalsari",
+        "postal_code": "60100",
+        "is_default": true,
+        "notes": "Alamat utama"
+    }
+    ```
+
+### Hapus Alamat
+
+-   **DELETE** `/api/addresses/{id}`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Response:**
+    ```json
+    { "success": true }
+    ```
+
+---
+
+## Pesanan
+
+### Checkout (Buat Pesanan & Pembayaran)
 
 -   **POST** `/api/orders` _(belum tersedia, rencana integrasi Midtrans)_
 
-### Daftar Pesanan User
+### Daftar Pesanan Pengguna
 
 -   **GET** `/api/my-orders`
 -   **Headers:** `Authorization: Bearer {token}`
@@ -173,20 +272,12 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ---
 
-## Alamat (Address)
-
-_(disarankan untuk ditambah)_
-
--   **GET/POST/PUT/DELETE** `/api/addresses`
-
----
-
 ## Catatan
 
--   Semua endpoint yang butuh login harus pakai header: `Authorization: Bearer {token}`
+-   Semua endpoint yang membutuhkan login harus menggunakan header: `Authorization: Bearer {token}`
 -   Untuk pembayaran, integrasi Midtrans akan menambah endpoint baru.
 -   Untuk endpoint admin, gunakan middleware admin (belum tersedia di API publik).
 
 ---
 
-**Silakan hubungi tim backend untuk pertanyaan lebih lanjut atau request endpoint tambahan!**
+**Silakan hubungi tim backend untuk pertanyaan lebih lanjut atau permintaan endpoint tambahan!**
