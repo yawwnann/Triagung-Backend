@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandName('Trijaya Agung Admin')
             ->id('admin')
             ->path('admin')
             ->login()
