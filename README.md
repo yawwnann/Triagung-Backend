@@ -64,6 +64,41 @@
 
 -   **GET** `/api/banners`
 
+### 2a. Wilayah Indonesia
+
+#### Daftar Provinsi
+
+-   **GET** `/api/provinces`
+-   **Response:**
+    ```json
+    [
+        { "id": "11", "name": "Aceh" },
+        { "id": "12", "name": "Sumatera Utara" }
+    ]
+    ```
+
+#### Daftar Kabupaten/Kota berdasarkan Provinsi
+
+-   **GET** `/api/regencies?province_id=11`
+-   **Response:**
+    ```json
+    [
+        { "id": "1101", "province_id": "11", "name": "Kabupaten Simeulue" },
+        { "id": "1102", "province_id": "11", "name": "Kabupaten Aceh Singkil" }
+    ]
+    ```
+
+#### Daftar Kecamatan berdasarkan Kabupaten/Kota
+
+-   **GET** `/api/districts?regency_id=1101`
+-   **Response:**
+    ```json
+    [
+        { "id": "1101010", "regency_id": "1101", "name": "TEUPAH SELATAN" },
+        { "id": "1101020", "regency_id": "1101", "name": "SIMEULUE TIMUR" }
+    ]
+    ```
+
 ---
 
 ## 3. Keranjang Belanja
