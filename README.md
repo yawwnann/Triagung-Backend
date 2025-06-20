@@ -7,6 +7,7 @@
 3. [Keranjang Belanja](#keranjang-belanja)
 4. [Alamat Pengiriman](#alamat-pengiriman)
 5. [Pesanan & Pembayaran](#pesanan--pembayaran)
+6. [User Profile](#user-profile)
 
 ---
 
@@ -314,6 +315,41 @@
     ```
 -   Snap token didapatkan saat checkout dan digunakan untuk pembayaran online.
 -   Kolom `payment_token` pada tabel `orders` menyimpan token Snap dari Midtrans.
+
+---
+
+## 6. User Profile
+
+### Lihat Detail Profile
+
+-   **GET** `/api/profile-detail`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "user_id": 1,
+        "phone": "08123456789",
+        "bio": "Ini adalah bio saya.",
+        "avatar": "https://example.com/avatar.jpg",
+        "gender": "male",
+        "birth_date": "2000-01-01"
+    }
+    ```
+
+### Update Detail Profile
+
+-   **PUT** `/api/profile-detail`
+-   **Headers:** `Authorization: Bearer {token}`
+-   **Body:**
+    ```json
+    {
+        "phone": "08987654321",
+        "bio": "Bio baru.",
+        "gender": "female"
+    }
+    ```
+-   **Response:** Data profile yang baru diupdate.
 
 ---
 
