@@ -6,6 +6,9 @@ class Province extends Model
 {
     protected $fillable = ['id', 'name'];
     public $timestamps = false;
+    protected $casts = [
+        'id' => 'string',
+    ];
     public function regencies(): HasMany
     {
         return $this->hasMany(Regency::class);

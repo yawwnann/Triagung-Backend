@@ -7,6 +7,10 @@ class Regency extends Model
 {
     protected $fillable = ['id', 'province_id', 'name'];
     public $timestamps = false;
+    protected $casts = [
+        'id' => 'string',
+        'province_id' => 'string',
+    ];
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);
