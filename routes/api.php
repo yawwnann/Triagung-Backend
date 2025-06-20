@@ -28,7 +28,7 @@ Route::middleware('auth:api')->delete('addresses/{id}', [AddressController::clas
 Route::middleware('auth:api')->post('checkout', [OrderController::class, 'checkout']);
 Route::middleware('auth:api')->get('order-detail/{orderId}', [OrderController::class, 'orderDetail']);
 Route::middleware('auth:api')->get('/profile-detail', [UserProfileController::class, 'show']);
-Route::middleware('auth:api')->put('/profile-detail', [UserProfileController::class, 'update']);
+Route::middleware('auth:api')->post('/profile-detail', [UserProfileController::class, 'update']);
 Route::get('provinces', [WilayahController::class, 'provinces']);
 Route::get('regencies', [WilayahController::class, 'regencies']);
 Route::get('districts', [WilayahController::class, 'districts']);

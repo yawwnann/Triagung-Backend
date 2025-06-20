@@ -339,7 +339,7 @@
 
 ### Update Detail Profile
 
--   **PUT** `/api/profile-detail`
+-   **POST** `/api/profile-detail`
 -   **Headers:** `Authorization: Bearer {token}`
 -   **Body:**
     ```json
