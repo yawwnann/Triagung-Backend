@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Produk;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Midtrans\Snap;
 
@@ -13,18 +16,18 @@ class OrderController extends Controller
     public function myOrders(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $orders = Order::with('items')->where('user_id', $user->id)->orderByDesc('created_at')->get();
+        $orders = Order::with('items')->where('user_id', $user->id)->where('status', '!=', 'pending')->orderByDesc('created_at')->get();
         return response()->json($orders);
     }
 
     public function cart(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $cart = Order::with('items')
+        $cart = Order::with('items.produk')
             ->where('user_id', $user->id)
             ->where('status', 'pending')
-            ->orderByDesc('created_at')
-            ->get();
+            ->first();
+
         return response()->json($cart);
     }
 
@@ -32,58 +35,62 @@ class OrderController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         $request->validate([
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:produks,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'product_id' => 'required|exists:produks,id',
+            'quantity' => 'required|integer|min:1',
         ]);
 
-        $addressId = $request->input('address_id') ?? $user->addresses()->first()?->id;
-        if (!$addressId) {
-            return response()->json(['error' => 'User belum memiliki alamat.'], 422);
-        }
+        // Cari atau buat keranjang baru (order dengan status 'pending')
+        $cart = Order::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'status' => 'pending',
+            ],
+            [
+                'address_id' => $user->addresses()->where('is_default', true)->first()?->id,
+                'order_number' => 'CART-' . strtoupper(Str::random(8)),
+                'payment_status' => 'pending',
+                'total_amount' => 0,
+                'shipping_cost' => 0,
+                'tax' => 0,
+                'discount' => 0,
+                'grand_total' => 0,
+            ]
+        );
 
-        $order = Order::create([
-            'user_id' => $user->id,
-            'address_id' => $addressId,
-            'order_number' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
-            'total_amount' => 0,
-            'shipping_cost' => 0,
-            'tax' => 0,
-            'discount' => 0,
-            'grand_total' => 0,
-            'status' => 'pending',
-            'payment_status' => 'pending',
-            'payment_method' => null,
-            'notes' => null,
-        ]);
+        $produk = Produk::findOrFail($request->product_id);
 
-        $total = 0;
-        foreach ($request->items as $item) {
-            $produk = \App\Models\Produk::findOrFail($item['product_id']);
-            $qty = $item['quantity'];
-            $subtotal = $produk->harga * $qty;
-            \App\Models\OrderItem::create([
-                'order_id' => $order->id,
+        // Cek apakah item sudah ada di keranjang
+        $orderItem = $cart->items()->where('product_id', $produk->id)->first();
+
+        if ($orderItem) {
+            // Jika sudah ada, update kuantitasnya
+            $orderItem->quantity += $request->quantity;
+            $orderItem->subtotal = $orderItem->quantity * $orderItem->price;
+            $orderItem->save();
+        } else {
+            // Jika belum ada, buat item baru
+            $cart->items()->create([
                 'product_id' => $produk->id,
                 'product_name' => $produk->nama,
                 'price' => $produk->harga,
-                'quantity' => $qty,
-                'subtotal' => $subtotal,
+                'quantity' => $request->quantity,
+                'subtotal' => $produk->harga * $request->quantity,
             ]);
-            $total += $subtotal;
         }
-        $order->update([
-            'total_amount' => $total,
-            'grand_total' => $total,
-        ]);
 
-        return response()->json($order->load('items'), 201);
+        // Hitung ulang total keranjang
+        $total = $cart->items()->sum('subtotal');
+        $cart->total_amount = $total;
+        $cart->grand_total = $total + $cart->shipping_cost + $cart->tax - $cart->discount;
+        $cart->save();
+
+        return response()->json($cart->load('items.produk'));
     }
 
     public function updateCartItem(Request $request, $itemId)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $item = \App\Models\OrderItem::whereHas('order', function ($q) use ($user) {
+        $item = OrderItem::whereHas('order', function ($q) use ($user) {
             $q->where('user_id', $user->id)->where('status', 'pending');
         })->findOrFail($itemId);
 
@@ -97,25 +104,35 @@ class OrderController extends Controller
 
         // Update grand_total order
         $order = $item->order;
-        $order->total_amount = $order->items()->sum('subtotal');
-        $order->grand_total = $order->total_amount;
+        $total = $order->items()->sum('subtotal');
+        $order->total_amount = $total;
+        $order->grand_total = $total + $order->shipping_cost + $order->tax - $order->discount;
         $order->save();
 
-        return response()->json($item->fresh(['order']));
+        return response()->json($item->fresh(['order.items.produk']));
     }
 
     public function deleteCartItem(Request $request, $itemId)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $item = \App\Models\OrderItem::whereHas('order', function ($q) use ($user) {
+        $item = OrderItem::whereHas('order', function ($q) use ($user) {
             $q->where('user_id', $user->id)->where('status', 'pending');
         })->findOrFail($itemId);
         $order = $item->order;
         $item->delete();
+
+        // Jika keranjang menjadi kosong, hapus keranjang
+        if ($order->items()->count() === 0) {
+            $order->delete();
+            return response()->json(['message' => 'Keranjang berhasil dikosongkan']);
+        }
+
         // Update grand_total order
-        $order->total_amount = $order->items()->sum('subtotal');
-        $order->grand_total = $order->total_amount;
+        $total = $order->items()->sum('subtotal');
+        $order->total_amount = $total;
+        $order->grand_total = $total + $order->shipping_cost + $order->tax - $order->discount;
         $order->save();
+
         return response()->json(['success' => true]);
     }
 

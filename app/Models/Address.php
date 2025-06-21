@@ -35,4 +35,9 @@ class Address extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getFullAddressAttribute()
+    {
+        return "{$this->recipient_name} - {$this->address}, {$this->city}, {$this->province}";
+    }
 }

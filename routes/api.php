@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\WilayahController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('produks', [ProdukController::class, 'index']);
@@ -33,3 +34,6 @@ Route::middleware('auth:api')->post('/profile-detail', [UserProfileController::c
 Route::get('provinces', [WilayahController::class, 'provinces']);
 Route::get('regencies', [WilayahController::class, 'regencies']);
 Route::get('districts', [WilayahController::class, 'districts']);
+
+// Midtrans Webhook Notification
+Route::post('midtrans/notification', [WebhookController::class, 'handle']);

@@ -34,7 +34,7 @@ class OrderResource extends Resource
                     ->required()
                     ->searchable(),
                 Forms\Components\Select::make('address_id')
-                    ->relationship('address', 'recipient_name')
+                    ->relationship('address', 'full_address')
                     ->label('Alamat Pengiriman')
                     ->required()
                     ->searchable(),
