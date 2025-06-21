@@ -13,4 +13,18 @@ class ProdukController extends Controller
         $produks = Produk::with('kategoriProduk')->get();
         return response()->json($produks);
     }
+
+    /**
+     * Menampilkan detail satu produk.
+     */
+    public function show($id)
+    {
+        $produk = Produk::with('kategoriProduk')->find($id);
+
+        if (!$produk) {
+            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
+        }
+
+        return response()->json($produk);
+    }
 }

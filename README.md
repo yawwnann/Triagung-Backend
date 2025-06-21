@@ -100,6 +100,28 @@
     ]
     ```
 
+### Detail Produk
+
+-   **GET** `/api/produks/{id}`
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "nama": "Semen Tiga Roda",
+        "slug": "semen-tiga-roda",
+        "deskripsi": "Deskripsi untuk Semen Tiga Roda.",
+        "harga": 50000,
+        "stok": 100,
+        "gambar": "url_gambar.jpg",
+        "kategori_produk_id": 1,
+        "kategori_produk": {
+            "id": 1,
+            "nama": "Semen",
+            "slug": "semen"
+        }
+    }
+    ```
+
 ---
 
 ## 3. Keranjang Belanja
