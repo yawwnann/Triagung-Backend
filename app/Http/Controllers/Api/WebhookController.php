@@ -48,9 +48,8 @@ class WebhookController extends Controller
             if ($transactionStatus == 'settlement' || ($transactionStatus == 'capture' && $fraudStatus == 'accept')) {
                 // Pembayaran berhasil
                 $order->payment_status = 'paid';
-                $order->payment_method = $paymentType; // <-- Menyimpan metode pembayaran
-                // Anda bisa juga mengubah status order jika perlu, misal:
-                // $order->status = 'paid';
+                $order->payment_method = $paymentType;
+                $order->status = 'paid'; // Update status order menjadi 'paid'
             } else if ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
                 // Pembayaran gagal atau dibatalkan
                 $order->payment_status = 'failed';

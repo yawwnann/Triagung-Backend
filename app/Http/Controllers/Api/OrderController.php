@@ -142,6 +142,7 @@ class OrderController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         $request->validate([
             'address_id' => 'required|exists:addresses,id',
+            'notes' => 'nullable|string|max:1000',
         ]);
         $addressId = $request->address_id;
         // Pastikan address milik user
@@ -160,6 +161,10 @@ class OrderController extends Controller
         // Update address jika berbeda
         if ($order->address_id != $addressId) {
             $order->address_id = $addressId;
+        }
+        // Update notes jika ada
+        if ($request->has('notes')) {
+            $order->notes = $request->notes;
         }
         $order->status = 'processing';
         $order->save();
