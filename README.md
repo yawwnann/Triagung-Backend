@@ -384,3 +384,66 @@
 ---
 
 **Silakan hubungi tim backend untuk pertanyaan lebih lanjut atau permintaan endpoint tambahan!**
+
+# Trijaya Backend
+
+Backend untuk aplikasi Trijaya, dibangun dengan Laravel.
+
+## Dokumentasi Docker
+
+Proyek ini menyertakan konfigurasi Docker untuk memudahkan pengembangan dan pengujian. Berikut adalah panduan untuk menggunakan Docker:
+
+### Prasyarat
+
+-   Docker dan Docker Compose harus sudah terinstal di sistem Anda.
+
+### Cara Menjalankan Aplikasi dengan Docker
+
+1. **Clone Repositori** (jika belum dilakukan):
+    ```bash
+    git clone https://github.com/yawwnann/Triagung-Backend.git
+    cd Triagung-Backend
+    ```
+2. **Konfigurasi Lingkungan**:
+   Salin file `.env.docker` ke `.env` atau sesuaikan pengaturan di `docker-compose.yml` sesuai kebutuhan Anda.
+3. **Bangun dan Jalankan Container**:
+    ```bash
+    docker-compose up --build
+    ```
+    Ini akan membangun image Docker dan menjalankan container untuk aplikasi Laravel (port 8000), database MySQL (port 3306), dan phpMyAdmin (port 8080).
+4. **Akses Aplikasi**:
+    - Aplikasi Laravel: `http://localhost:8000`
+    - phpMyAdmin: `http://localhost:8080`
+5. **Hentikan Container**:
+    ```bash
+    docker-compose down
+    ```
+
+### Pengujian Kecepatan Docker
+
+Untuk menguji kecepatan setup Docker Anda, gunakan skrip pengujian yang tersedia di folder `testing`:
+
+1. Pindah ke direktori `testing`:
+    ```bash
+    cd testing
+    ```
+2. Jalankan skrip utama untuk memilih tes yang diinginkan:
+    ```bash
+    powershell -ExecutionPolicy Bypass -File run-all-tests.ps1
+    ```
+3. Ikuti petunjuk di layar untuk memilih tes yang ingin dijalankan, seperti `test-speed-fixed.ps1` untuk tes kecepatan Docker dengan perbaikan.
+
+### Catatan Tambahan
+
+-   File `Dockerfile` berisi konfigurasi untuk image aplikasi Laravel.
+-   File `docker-compose.yml` mendefinisikan layanan, jaringan, dan volume untuk Docker.
+-   Untuk informasi lebih lanjut tentang menjalankan aplikasi tanpa Docker, lihat `README-RUNNING.md`.
+-   Untuk detail lebih lanjut tentang konfigurasi Docker, lihat `README-Docker.md`.
+
+## Kontribusi
+
+Jika Anda ingin berkontribusi pada proyek ini, silakan buat pull request atau laporkan masalah di repositori GitHub.
+
+## Lisensi
+
+Proyek ini dilisensikan di bawah Lisensi MIT - lihat file LICENSE untuk detailnya.
