@@ -13,7 +13,7 @@
 
 ## 1. Autentikasi
 
-### Registrasi
+### Registras
 
 -   **POST** `/api/register`
 -   **Body:**
