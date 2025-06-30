@@ -48,5 +48,14 @@ class UserSeeder extends Seeder
                 'email' => $user['email'],
             ], $user);
         }
+
+        // Pastikan user admin utama selalu ada
+        \App\Models\User::updateOrCreate([
+            'email' => 'admin@gmail.com',
+        ], [
+            'name' => 'Admin',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+            'role' => 'admin',
+        ]);
     }
 }

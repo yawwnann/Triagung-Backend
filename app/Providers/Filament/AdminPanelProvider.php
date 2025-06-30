@@ -64,8 +64,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class, // Middleware autentikasi Filament
-                // Tambahkan custom middleware jika ingin membatasi akses admin saja
-                // \App\Http\Middleware\IsAdmin::class,
+                \App\Http\Middleware\IsAdmin::class,
             ])
         ;
     }
