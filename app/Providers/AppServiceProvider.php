@@ -50,5 +50,9 @@ class AppServiceProvider extends ServiceProvider
 
             return new FilesystemAdapter($filesystem, $adapter);
         });
+
+        if (app()->environment('production')) {
+            \URL::forceScheme('https');
+        }
     }
 }
