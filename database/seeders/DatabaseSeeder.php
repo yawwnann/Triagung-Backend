@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             AddressSeeder::class,
             KategoriProdukSeeder::class,
             OrderSeeder::class,
+            WilayahSeeder::class,
         ]);
     }
 }
