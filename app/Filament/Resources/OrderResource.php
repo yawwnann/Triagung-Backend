@@ -75,6 +75,7 @@ class OrderResource extends Resource
                         'shipped' => 'Dikirim',
                         'delivered' => 'Diterima',
                         'cancelled' => 'Dibatalkan',
+                        'completed' => 'Selesai',
                     ])
                     ->required(),
                 Forms\Components\Select::make('payment_status')
@@ -115,6 +116,7 @@ class OrderResource extends Resource
                         'info' => 'shipped',
                         'success' => 'delivered',
                         'danger' => 'cancelled',
+                        'success' => 'completed',
                     ])
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'Menunggu',
@@ -122,6 +124,8 @@ class OrderResource extends Resource
                         'shipped' => 'Dikirim',
                         'delivered' => 'Diterima',
                         'cancelled' => 'Dibatalkan',
+                        'completed' => 'Selesai',
+                        default => 'Status Tidak Dikenal',
                     }),
                 Tables\Columns\BadgeColumn::make('payment_status')
                     ->label('Pembayaran')
@@ -149,6 +153,7 @@ class OrderResource extends Resource
                         'shipped' => 'Dikirim',
                         'delivered' => 'Diterima',
                         'cancelled' => 'Dibatalkan',
+                        'completed' => 'Selesai',
                     ]),
                 Tables\Filters\SelectFilter::make('payment_status')
                     ->label('Status Pembayaran')
