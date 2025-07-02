@@ -65,10 +65,6 @@ class AdminPanelProvider extends PanelProvider
             ->auth(function ($user) {
                 return true;
             })
-            ->authMiddleware([
-                Authenticate::class,
-                // \App\Http\Middleware\IsAdmin::class, // Nonaktifkan agar semua role bisa masuk
-            ])
         ;
     }
 }
