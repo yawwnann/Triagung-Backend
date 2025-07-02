@@ -10,8 +10,8 @@ class StatistikOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $totalPemasukan = Order::where('status', 'delivered')->sum('grand_total');
-        $pesananBerhasil = Order::where('status', 'delivered')->count();
+        $totalPemasukan = Order::where('status', 'completed')->sum('grand_total');
+        $pesananBerhasil = Order::where('status', 'completed')->count();
         $pesananGagal = Order::where('status', 'cancelled')->count();
         $pesananProses = Order::whereIn('status', ['processing', 'shipped'])->count();
         $pesananBaru = Order::where('status', 'pending')->count();
@@ -22,7 +22,7 @@ class StatistikOverview extends BaseWidget
                 ->description('Total pemasukan dari pesanan berhasil')
                 ->color('success'),
             Stat::make('Pesanan Berhasil', $pesananBerhasil)
-                ->description('Pesanan dengan status delivered')
+                ->description('Pesanan dengan status completed')
                 ->color('success'),
             Stat::make('Pesanan Gagal', $pesananGagal)
                 ->description('Pesanan dengan status cancelled')
