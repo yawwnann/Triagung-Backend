@@ -7,9 +7,10 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
-use Filament\Panel;
+use Filament\Panel as FilamentPanel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -23,10 +24,10 @@ class AdminPanelProvider extends PanelProvider
     /**
      * Daftarkan panel admin Filament.
      *
-     * @param Panel $panel
-     * @return Panel
+     * @param FilamentPanel $panel
+     * @return FilamentPanel
      */
-    public function panel(Panel $panel): Panel
+    public function panel(FilamentPanel $panel): FilamentPanel
     {
         return $panel
             ->default()
@@ -62,9 +63,6 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class, // Menonaktifkan komponen ikon Blade
                 DispatchServingFilamentEvent::class, // Mengeluarkan event saat Filament sedang disajikan
             ])
-            ->auth(function ($user) {
-                return true;
-            })
         ;
     }
 }
