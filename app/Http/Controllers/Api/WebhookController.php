@@ -57,7 +57,7 @@ class WebhookController extends Controller
             // Pembayaran berhasil
             $order->payment_status = 'paid';
             $order->payment_method = $paymentType;
-            $order->status = 'completed'; // Ganti 'paid' dengan 'completed' agar sesuai enum
+            $order->status = 'processing'; // Setelah bayar, status jadi 'processing'
         } else if ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
             // Pembayaran gagal atau dibatalkan
             $order->payment_status = 'failed';
