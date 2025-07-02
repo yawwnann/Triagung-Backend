@@ -18,12 +18,7 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        try {
-            $user = JWTAuth::parseToken()->authenticate();
-        } catch (\Exception $e) {
-            abort(403);
-        }
-        if (!$user || $user->role !== 'admin') {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
             abort(403);
         }
         return $next($request);
