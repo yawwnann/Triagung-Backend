@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 class IsAdmin
@@ -17,11 +18,12 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return redirect('/admin/login');
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Exception $e) {
+            abort(403);
         }
-        $user = Auth::user();
-        if ($user->role !== 'admin') {
+        if (!$user || $user->role !== 'admin') {
             abort(403);
         }
         return $next($request);
