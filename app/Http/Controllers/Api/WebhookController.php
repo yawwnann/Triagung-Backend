@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use Midtrans\Config;
 use Midtrans\Notification;
+use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
@@ -38,7 +39,7 @@ class WebhookController extends Controller
 
         // 4. Verifikasi signature untuk keamanan
         $signatureKey = hash('sha512', $orderId . $notification->status_code . $notification->gross_amount . config('midtrans.server_key'));
-        \Log::info('Webhook debug', [
+        Log::info('Webhook debug', [
             'order_id' => $orderId,
             'status_code' => $notification->status_code,
             'gross_amount' => $notification->gross_amount,
