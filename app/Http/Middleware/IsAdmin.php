@@ -17,19 +17,13 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!\Illuminate\Support\Facades\Auth::check()) {
+        if (!Auth::check()) {
             return redirect('/admin/login');
         }
-        $user = \Illuminate\Support\Facades\Auth::user();
-        // DEBUG: tampilkan info user di browser
-        return response()->json([
-            'id' => $user->id,
-            'email' => $user->email,
-            'role' => $user->role,
-        ]);
-        // if ($user->role !== 'admin') {
-        //     abort(403);
-        // }
-        // return $next($request);
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            abort(403);
+        }
+        return $next($request);
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class KategoriProduk extends Model
 {
-    use HasFactory, HasSlug; // <-- 2. Gunakan Trait
+    use HasFactory, HasSlug;
 
     protected $fillable = ['nama', 'slug', 'deskripsi'];
 
