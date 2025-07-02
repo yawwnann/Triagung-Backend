@@ -62,9 +62,12 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class, // Menonaktifkan komponen ikon Blade
                 DispatchServingFilamentEvent::class, // Mengeluarkan event saat Filament sedang disajikan
             ])
+            ->auth(function ($user) {
+                return true;
+            })
             ->authMiddleware([
-                Authenticate::class, // Middleware autentikasi Filament
-                \App\Http\Middleware\IsAdmin::class,
+                Authenticate::class,
+                // \App\Http\Middleware\IsAdmin::class, // Nonaktifkan agar semua role bisa masuk
             ])
         ;
     }
