@@ -18,8 +18,12 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            abort(403);
+        if (!Auth::check()) {
+            abort(403, 'Not logged in');
+        }
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            abort(403, 'Not admin. Role: ' . $user->role . ', Email: ' . $user->email);
         }
         return $next($request);
     }
