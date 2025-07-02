@@ -43,20 +43,16 @@ class WebhookController extends Controller
         }
 
         // 5. Update order berdasarkan status notifikasi
-        // Hanya proses jika order masih dalam status menunggu pembayaran
-        if ($order->payment_status === 'pending') {
-            if ($transactionStatus == 'settlement' || ($transactionStatus == 'capture' && $fraudStatus == 'accept')) {
-                // Pembayaran berhasil
-                $order->payment_status = 'paid';
-                $order->payment_method = $paymentType;
-                $order->status = 'paid'; // Update status order menjadi 'paid'
-            } else if ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
-                // Pembayaran gagal atau dibatalkan
-                $order->payment_status = 'failed';
-                $order->status = 'cancelled';
-            }
+        if ($transactionStatus == 'settlement' || ($transactionStatus == 'capture' && $fraudStatus == 'accept')) {
+            // Pembayaran berhasil
+            $order->payment_status = 'paid';
+            $order->payment_method = $paymentType;
+            $order->status = 'paid'; // Update status order menjadi 'paid'
+        } else if ($transactionStatus == 'expire' || $transactionStatus == 'cancel' || $transactionStatus == 'deny') {
+            // Pembayaran gagal atau dibatalkan
+            $order->payment_status = 'failed';
+            $order->status = 'cancelled';
         }
-
         $order->save();
 
         return response()->json(['status' => 'success']);
