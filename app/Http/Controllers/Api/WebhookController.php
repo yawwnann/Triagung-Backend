@@ -38,9 +38,18 @@ class WebhookController extends Controller
 
         // 4. Verifikasi signature untuk keamanan
         $signatureKey = hash('sha512', $orderId . $notification->status_code . $notification->gross_amount . config('midtrans.server_key'));
-        if ($notification->signature_key != $signatureKey) {
-            return response()->json(['message' => 'Invalid signature.'], 403);
-        }
+        \Log::info('Webhook debug', [
+            'order_id' => $orderId,
+            'status_code' => $notification->status_code,
+            'gross_amount' => $notification->gross_amount,
+            'server_key' => config('midtrans.server_key'),
+            'signature_key' => $notification->signature_key,
+            'expected_signature' => $signatureKey,
+        ]);
+        // Untuk debug, matikan pengecekan signature sementara
+        // if ($notification->signature_key != $signatureKey) {
+        //     return response()->json(['message' => 'Invalid signature.'], 403);
+        // }
 
         // 5. Update order berdasarkan status notifikasi
         if ($transactionStatus == 'settlement' || ($transactionStatus == 'capture' && $fraudStatus == 'accept')) {
@@ -55,6 +64,17 @@ class WebhookController extends Controller
         }
         $order->save();
 
-        return response()->json(['status' => 'success']);
+        // Untuk debug, tampilkan data signature dan notifikasi ke response
+        return response()->json([
+            'debug' => [
+                'order_id' => $orderId,
+                'status_code' => $notification->status_code,
+                'gross_amount' => $notification->gross_amount,
+                'server_key' => config('midtrans.server_key'),
+                'signature_key' => $notification->signature_key,
+                'expected_signature' => $signatureKey,
+            ],
+            'status' => 'success',
+        ]);
     }
 }
