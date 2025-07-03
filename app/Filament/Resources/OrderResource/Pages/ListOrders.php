@@ -13,19 +13,6 @@ class ListOrders extends ListRecords
 {
     protected static string $resource = OrderResource::class;
 
-    public function getTabs(): array
-    {
-        return [
-            'all' => Tab::make('Semua'),
-            'processing' => Tab::make('Diproses')
-                ->modifyQueryUsing(fn($query) => $query->where('status', 'processing')),
-            'shipped' => Tab::make('Dikirim')
-                ->modifyQueryUsing(fn($query) => $query->where('status', 'shipped')),
-            'completed' => Tab::make('Berhasil')
-                ->modifyQueryUsing(fn($query) => $query->where('status', 'completed')),
-        ];
-    }
-
     protected function getHeaderActions(): array
     {
         return [
@@ -51,5 +38,15 @@ class ListOrders extends ListRecords
                     }
                 }),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Semua Pesanan';
+    }
+
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return true;
     }
 }
