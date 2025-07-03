@@ -108,16 +108,18 @@ class OrderResource extends Resource
                     ->label('Total')
                     ->money('IDR')
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                     ->label('Status')
-                    ->colors([
-                        'warning' => 'pending',
-                        'primary' => 'processing',
-                        'info' => 'shipped',
-                        'success' => 'delivered',
-                        'danger' => 'cancelled',
-                        'success' => 'completed',
-                    ])
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'pending' => 'warning',
+                        'processing' => 'primary',
+                        'shipped' => 'info',
+                        'delivered' => 'success',
+                        'cancelled' => 'danger',
+                        'completed' => 'success',
+                        default => 'secondary',
+                    })
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'Menunggu',
                         'processing' => 'Diproses',
@@ -127,13 +129,15 @@ class OrderResource extends Resource
                         'completed' => 'Selesai',
                         default => 'Status Tidak Dikenal',
                     }),
-                Tables\Columns\BadgeColumn::make('payment_status')
+                Tables\Columns\TextColumn::make('payment_status')
                     ->label('Pembayaran')
-                    ->colors([
-                        'warning' => 'pending',
-                        'success' => 'paid',
-                        'danger' => 'failed',
-                    ])
+                    ->badge()
+                    ->color(fn($state) => match ($state) {
+                        'pending' => 'warning',
+                        'paid' => 'success',
+                        'failed' => 'danger',
+                        default => 'secondary',
+                    })
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'Menunggu',
                         'paid' => 'Lunas',
