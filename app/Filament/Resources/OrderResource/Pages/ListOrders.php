@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables;
 use Filament\Resources\Components\Tab;
+use Filament\Actions;
 
 class ListOrders extends ListRecords
 {
@@ -24,7 +25,7 @@ class ListOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Tables\Actions\CreateAction::make(),
+            Actions\CreateAction::make(),
         ];
     }
 }
