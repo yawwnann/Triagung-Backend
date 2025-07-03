@@ -20,6 +20,8 @@ class OrderResource extends Resource
 
     protected static ?string $navigationGroup = 'Manajemen Pesanan';
 
+    protected static ?string $navigationLabel = 'Semua Pesanan';
+
     protected static ?string $modelLabel = 'Pesanan';
 
     protected static ?string $pluralModelLabel = 'Pesanan';
@@ -189,6 +191,9 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
+            'processing' => Pages\ListProcessingOrders::route('/diproses'),
+            'shipped' => Pages\ListShippedOrders::route('/dikirim'),
+            'completed' => Pages\ListCompletedOrders::route('/berhasil'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];

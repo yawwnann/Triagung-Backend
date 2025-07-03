@@ -16,11 +16,12 @@ class ListOrders extends ListRecords
     public function getTabs(): array
     {
         return [
-            'Diproses' => Tab::make('Diproses')
-                ->modifyQueryUsing(fn($query) => $query->whereIn('status', ['processing', 'delivered'])),
-            'Dikirim' => Tab::make('Dikirim')
+            'all' => Tab::make('Semua'),
+            'processing' => Tab::make('Diproses')
+                ->modifyQueryUsing(fn($query) => $query->where('status', 'processing')),
+            'shipped' => Tab::make('Dikirim')
                 ->modifyQueryUsing(fn($query) => $query->where('status', 'shipped')),
-            'Berhasil' => Tab::make('Berhasil')
+            'completed' => Tab::make('Berhasil')
                 ->modifyQueryUsing(fn($query) => $query->where('status', 'completed')),
         ];
     }

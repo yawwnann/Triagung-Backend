@@ -23,7 +23,7 @@ class ProdukResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationGroup = 'Manajemen Pesanan';
+    protected static ?string $navigationGroup = 'Produk';
 
     public static function form(Form $form): Form
     {
