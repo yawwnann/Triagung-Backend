@@ -167,6 +167,7 @@ class OrderController extends Controller
             $order->notes = $request->notes;
         }
         $order->status = 'processing';
+        $order->created_at = now();
         $order->save();
 
         // Konfigurasi Midtrans
