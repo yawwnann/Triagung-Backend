@@ -16,7 +16,9 @@ class ListOrders extends ListRecords
     {
         return [
             'Diproses' => Tab::make('Diproses')
-                ->modifyQueryUsing(fn($query) => $query->whereIn('status', ['processing', 'shipped', 'delivered'])),
+                ->modifyQueryUsing(fn($query) => $query->whereIn('status', ['processing', 'delivered'])),
+            'Dikirim' => Tab::make('Dikirim')
+                ->modifyQueryUsing(fn($query) => $query->where('status', 'shipped')),
             'Berhasil' => Tab::make('Berhasil')
                 ->modifyQueryUsing(fn($query) => $query->where('status', 'completed')),
         ];
