@@ -34,4 +34,12 @@ class PesananBerhasil extends Page implements HasTable
             Tables\Columns\TextColumn::make('created_at')->label('Tanggal')->dateTime('d M Y H:i')->sortable(),
         ];
     }
+
+    protected function getTableActions(): array
+    {
+        return [
+            Tables\Actions\ViewAction::make(),
+            Tables\Actions\EditAction::make(),
+        ];
+    }
 }
