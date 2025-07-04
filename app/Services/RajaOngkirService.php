@@ -217,9 +217,14 @@ class RajaOngkirService
     private function getLocalRegencyIdFromKomerce($komerceId)
     {
         $mapping = [
-            '31555' => '3524', // Komerce Lamongan => ID lokal Lamongan
-            // Tambahkan mapping lain sesuai kebutuhan
+            '419' => '3471', // Yogyakarta
+            '31555' => '3524', // Lamongan
+            '68423' => '3471', // Yogyakarta
+            // Tambahkan Komerce ID lain di sini jika muncul di log
         ];
+        if (!isset($mapping[$komerceId])) {
+            Log::warning('Komerce ID belum ada di mapping getLocalRegencyIdFromKomerce', ['komerceId' => $komerceId]);
+        }
         return $mapping[$komerceId] ?? null;
     }
 
@@ -233,20 +238,14 @@ class RajaOngkirService
         if (!$localId) {
             return ['city_name' => '', 'province' => ''];
         }
-        $regency = \App\Models\Regency::find($localId);
+        $regency = Regency::find($localId);
         Log::info('DEBUG: getCityNameById regency', [
             'regency' => $regency,
             'province_id' => $regency ? $regency->province_id : null
         ]);
         if ($regency) {
-            $province = $regency->province ?? $regency->province_id;
-            $provinceName = '';
-            if (is_object($province) && isset($province->name)) {
-                $provinceName = $province->name;
-            } elseif (!is_object($province)) {
-                $provinceModel = \App\Models\Province::find($province);
-                $provinceName = $provinceModel ? $provinceModel->name : '';
-            }
+            $provinceModel = Province::find($regency->province_id);
+            $provinceName = $provinceModel ? $provinceModel->name : '';
             return [
                 'city_name' => $regency->name,
                 'province' => $provinceName
@@ -261,7 +260,7 @@ class RajaOngkirService
     /**
      * Hitung ongkir menggunakan Raja Ongkir
      */
-    public function calculateShippingCost($destinationCityId, $weight = 1000, $courier = 'jne')
+    public function calculateShippingCost($destinationCityId, $weight = 1000, $courier = null)
     {
         Log::info('DEBUG: Masuk calculateShippingCost', [
             'destinationCityId' => $destinationCityId,
@@ -269,10 +268,9 @@ class RajaOngkirService
             'courier' => $courier
         ]);
         try {
-            // Dapatkan ID Komerce untuk kota tujuan (langsung pakai $destinationCityId)
-            $originId = $this->originCityId; // Harus ID Komerce, bukan RajaOngkir
-            $destinationId = $destinationCityId; // Harus ID Komerce, bukan RajaOngkir
-
+            $originId = $this->originCityId;
+            $destinationId = $destinationCityId;
+            $allCouriers = implode(':', array_keys($this->getAvailableCouriers()));
             $response = Http::withHeaders([
                 'key' => $this->apiKey,
                 'content-type' => 'application/x-www-form-urlencoded'
@@ -280,44 +278,31 @@ class RajaOngkirService
                         'origin' => $originId,
                         'destination' => $destinationId,
                         'weight' => $weight,
-                        'courier' => $courier,
+                        'courier' => $allCouriers,
                         'price' => 'lowest',
                     ]);
-
+            Log::info('DEBUG: Komerce response', ['body' => $response->body()]);
             if ($response->successful()) {
                 $data = $response->json();
-                $originData = $this->getCityNameById($originId);
-                $destinationData = $this->getCityNameById($destinationId);
                 if (isset($data['data']) && is_array($data['data']) && count($data['data']) > 0) {
+                    $results = [];
+                    foreach ($data['data'] as $cost) {
+                        $results[] = $cost;
+                    }
                     return [
                         'success' => true,
                         'message' => 'Berhasil mendapatkan data ongkir',
-                        'costs' => $data['data'],
-                        'origin' => $originData,
-                        'destination' => $destinationData
-                    ];
-                } elseif (isset($data['data']) && is_int($data['data'])) {
-                    Log::info('DEBUG: Komerce response data is int', ['data' => $data['data'], 'full_response' => $data]);
-                    return [
-                        'success' => false,
-                        'message' => 'Response Komerce tidak sesuai, data integer: ' . $data['data'],
-                        'costs' => []
-                    ];
-                } else {
-                    Log::info('DEBUG: Komerce response data unknown', ['data' => $data['data'] ?? null, 'full_response' => $data]);
-                    return [
-                        'success' => false,
-                        'message' => 'Tidak ada layanan pengiriman yang tersedia',
-                        'costs' => []
+                        'costs' => $results,
+                        'origin' => null,
+                        'destination' => null
                     ];
                 }
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Gagal menghubungi Komerce: ' . $response->body(),
-                    'costs' => []
-                ];
             }
+            return [
+                'success' => false,
+                'message' => 'Tidak ada layanan pengiriman yang tersedia',
+                'costs' => []
+            ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -335,7 +320,12 @@ class RajaOngkirService
         return [
             'jne' => 'JNE',
             'pos' => 'POS Indonesia',
-            'tiki' => 'TIKI'
+            'tiki' => 'TIKI',
+            'sicepat' => 'SiCepat',
+            'anteraja' => 'AnterAja',
+            'jnt' => 'J&T Express',
+            'ninja' => 'Ninja Xpress',
+            'wahana' => 'Wahana'
         ];
     }
 
