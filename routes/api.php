@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\WilayahController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\WebhookController;
+use App\Http\Controllers\Api\ShippingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('produks', [ProdukController::class, 'index']);
@@ -31,6 +32,12 @@ Route::middleware('auth:api')->post('checkout', [OrderController::class, 'checko
 Route::middleware('auth:api')->get('order-detail/{orderId}', [OrderController::class, 'orderDetail']);
 Route::middleware('auth:api')->get('/profile-detail', [UserProfileController::class, 'show']);
 Route::middleware('auth:api')->post('/profile-detail', [UserProfileController::class, 'update']);
+
+// Shipping API
+Route::middleware('auth:api')->post('shipping/calculate', [ShippingController::class, 'calculateShipping']);
+Route::middleware('auth:api')->get('shipping/couriers', [ShippingController::class, 'getCouriers']);
+Route::middleware('auth:api')->post('shipping/update-cart', [ShippingController::class, 'updateCartShipping']);
+
 Route::get('provinces', [WilayahController::class, 'provinces']);
 Route::get('regencies', [WilayahController::class, 'regencies']);
 Route::get('districts', [WilayahController::class, 'districts']);

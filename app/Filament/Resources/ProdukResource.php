@@ -47,6 +47,11 @@ class ProdukResource extends Resource
                 Forms\Components\TextInput::make('harga')
                     ->required()
                     ->numeric(),
+                Forms\Components\TextInput::make('berat')
+                    ->required()
+                    ->numeric()
+                    ->default(1000)
+                    ->label('Berat (gram)'),
                 Forms\Components\TextInput::make('stok')
                     ->required()
                     ->numeric()
