@@ -10,9 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('produks', function (Blueprint $table) {
-            $table->integer('berat')->default(1000)->after('harga'); // Berat dalam gram
-        });
+        if (!Schema::hasColumn('produks', 'berat')) {
+            Schema::table('produks', function (Blueprint $table) {
+                $table->integer('berat')->default(1000)->after('harga');
+            });
+        }
     }
 
     /**
@@ -20,8 +22,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('produks', function (Blueprint $table) {
-            $table->dropColumn('berat');
-        });
+        if (Schema::hasColumn('produks', 'berat')) {
+            Schema::table('produks', function (Blueprint $table) {
+                $table->dropColumn('berat');
+            });
+        }
     }
 };
