@@ -57,7 +57,6 @@ RUN echo '<VirtualHost *:80>\n\
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Expose port 80
-EXPOSE 8080
-ENV PORT=8080
+EXPOSE 80
 
- CMD bash -c "php artisan migrate --force && apache2-foreground"
+CMD bash -c "php artisan migrate --force && apache2-foreground"
