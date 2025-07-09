@@ -59,3 +59,4 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Expose port 80
 EXPOSE 80
 
+ CMD bash -c "php artisan migrate --force && apache2-foreground"
