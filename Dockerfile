@@ -59,5 +59,3 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Expose port 80
 EXPOSE 80
 
-# Run database migrations, seed WilayahSeeder, and start Apache
-CMD bash -c "php artisan migrate --force && php artisan db:seed --class=WilayahSeeder --force && apache2-foreground" 

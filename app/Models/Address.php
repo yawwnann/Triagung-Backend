@@ -20,6 +20,7 @@ class Address extends Model
         'postal_code',
         'is_default',
         'notes',
+        'regency_id',
     ];
 
     protected $casts = [

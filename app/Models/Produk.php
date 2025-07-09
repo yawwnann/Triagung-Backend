@@ -11,7 +11,7 @@ class Produk extends Model
 {
     use HasFactory, HasSlug; // <-- 2. Gunakan Trait
 
-    protected $fillable = ['kategori_produk_id', 'nama', 'slug', 'deskripsi', 'harga', 'stok', 'gambar'];
+    protected $fillable = ['kategori_produk_id', 'nama', 'slug', 'deskripsi', 'harga', 'berat', 'stok', 'gambar'];
 
     // Panggil metode boot dari trait
     protected static function boot()
