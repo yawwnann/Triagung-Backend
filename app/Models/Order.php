@@ -29,6 +29,8 @@ class Order extends Model
         'tax' => 'decimal:2',
         'discount' => 'decimal:2',
         'grand_total' => 'decimal:2',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     public function user(): BelongsTo
