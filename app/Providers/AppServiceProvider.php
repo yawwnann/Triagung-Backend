@@ -25,9 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Set default timezone untuk aplikasi
-        date_default_timezone_set('Asia/Jakarta');
-
         if (env('CLOUDINARY_CLOUD_NAME') && env('CLOUDINARY_API_KEY') && env('CLOUDINARY_API_SECRET')) {
             $cloudinary = new Cloudinary([
                 'cloud' => [

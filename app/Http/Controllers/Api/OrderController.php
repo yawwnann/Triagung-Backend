@@ -167,8 +167,7 @@ class OrderController extends Controller
             $order->notes = $request->notes;
         }
         $order->status = 'processing';
-        // Gunakan Carbon dengan timezone yang benar
-        $order->created_at = \Carbon\Carbon::now()->setTimezone('Asia/Jakarta');
+        $order->created_at = now();
         $order->save();
 
         // Konfigurasi Midtrans

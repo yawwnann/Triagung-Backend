@@ -115,11 +115,11 @@ class OrderResource extends Resource
                     ->badge()
                     ->color(fn($state) => match ($state) {
                         'pending' => 'warning',
-                        'processing' => 'primary',
+                        'processing' => 'orange',
                         'shipped' => 'info',
                         'delivered' => 'success',
                         'cancelled' => 'danger',
-                        'completed' => 'success',
+                        'completed' => 'emerald',
                         default => 'secondary',
                     })
                     ->formatStateUsing(fn(string $state): string => match ($state) {

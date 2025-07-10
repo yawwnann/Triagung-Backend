@@ -14,12 +14,15 @@ class Order extends Model
         'order_number',
         'total_amount',
         'shipping_cost',
+        'shipping_service',
+        'shipping_courier',
         'tax',
         'discount',
         'grand_total',
         'status',
         'payment_status',
         'payment_method',
+        'payment_token',
         'notes',
     ];
 
@@ -29,8 +32,8 @@ class Order extends Model
         'tax' => 'decimal:2',
         'discount' => 'decimal:2',
         'grand_total' => 'decimal:2',
-        'created_at' => 'datetime:Y-m-d H:i:s',
-        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
