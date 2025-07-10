@@ -12,14 +12,25 @@ class UserProfileController extends Controller
     // Mengambil profil pengguna yang sedang login
     public function show()
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        $profile = $user->profile;
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            $profile = $user->profile;
 
-        if (!$profile) {
-            return response()->json(['message' => 'Profil tidak ditemukan.'], 404);
+            if (!$profile) {
+                // Return empty profile data instead of 404
+                return response()->json([
+                    'phone' => null,
+                    'bio' => null,
+                    'avatar' => null,
+                    'gender' => null,
+                    'birth_date' => null,
+                ]);
+            }
+
+            return response()->json($profile);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Authentication failed'], 401);
         }
-
-        return response()->json($profile);
     }
 
     // Membuat atau memperbarui profil pengguna

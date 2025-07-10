@@ -30,8 +30,8 @@ Route::middleware('auth:api')->put('addresses/{id}', [AddressController::class, 
 Route::middleware('auth:api')->delete('addresses/{id}', [AddressController::class, 'destroy']);
 Route::middleware('auth:api')->post('checkout', [OrderController::class, 'checkout']);
 Route::middleware('auth:api')->get('order-detail/{orderId}', [OrderController::class, 'orderDetail']);
-Route::middleware('auth:api')->get('/profile-detail', [UserProfileController::class, 'show']);
-Route::middleware('auth:api')->post('/profile-detail', [UserProfileController::class, 'update']);
+Route::middleware('auth:api')->get('profile-detail', [UserProfileController::class, 'show']);
+Route::middleware('auth:api')->post('profile-detail', [UserProfileController::class, 'update']);
 
 // Shipping API
 Route::middleware('auth:api')->post('shipping/calculate', [ShippingController::class, 'calculateShipping']);

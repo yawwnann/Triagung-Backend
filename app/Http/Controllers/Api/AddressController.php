@@ -11,32 +11,48 @@ class AddressController extends Controller
 {
     public function index(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        return response()->json($user->addresses);
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            return response()->json($user->addresses);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Authentication failed'], 401);
+        }
     }
 
-    public function store(Request $request)
+        public function store(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        $data = $request->validate([
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+                    $data = $request->validate([
             'label' => 'required|string|max:50',
             'recipient_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
             'province' => 'required|string',
             'city' => 'required|string',
-            'regency_id' => 'required|string',
             'district' => 'required|string',
             'postal_code' => 'required|string',
             'is_default' => 'boolean',
             'notes' => 'nullable|string',
+            'regency_id' => 'nullable|string',
         ]);
-        if ($request->is_default) {
-            Address::where('user_id', $user->id)->update(['is_default' => false]);
+        
+        // Set regency_id to city value if not provided
+        if (!isset($data['regency_id'])) {
+            $data['regency_id'] = $data['city'];
         }
-        $data['user_id'] = $user->id;
-        $address = Address::create($data);
-        return response()->json($address, 201);
+            
+            if ($request->is_default) {
+                Address::where('user_id', $user->id)->update(['is_default' => false]);
+            }
+            $data['user_id'] = $user->id;
+            $address = Address::create($data);
+            return response()->json($address, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create address'], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -50,12 +66,18 @@ class AddressController extends Controller
             'address' => 'sometimes|string',
             'province' => 'sometimes|string',
             'city' => 'sometimes|string',
-            'regency_id' => 'sometimes|string',
             'district' => 'sometimes|string',
             'postal_code' => 'sometimes|string',
             'is_default' => 'boolean',
             'notes' => 'nullable|string',
+            'regency_id' => 'nullable|string',
         ]);
+        
+        // Set regency_id to city value if not provided
+        if (isset($data['city']) && !isset($data['regency_id'])) {
+            $data['regency_id'] = $data['city'];
+        }
+        
         if ($request->is_default) {
             Address::where('user_id', $user->id)->update(['is_default' => false]);
         }
