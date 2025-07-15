@@ -56,8 +56,15 @@ class ProdukResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('gambar')
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('gambar')
+                    ->label('Gambar Produk')
+                    ->disk('cloudinary')
+                    ->directory('produk')
+                    ->image()
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('1:1')
+                    ->imageResizeTargetWidth('800')
+                    ->imageResizeTargetHeight('800'),
             ]);
     }
 

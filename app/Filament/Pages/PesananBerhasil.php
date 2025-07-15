@@ -64,7 +64,7 @@ class PesananBerhasil extends Page implements HasTable
                     'paid' => 'Lunas',
                     'failed' => 'Gagal',
                 }),
-            Tables\Columns\TextColumn::make('created_at')->label('Tanggal')->dateTime('d M Y H:i')->sortable(),
+            Tables\Columns\TextColumn::make('created_at')->label('Tanggal')->dateTime('d M Y ')->sortable(),
         ];
     }
 

@@ -147,7 +147,7 @@ class OrderResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal')
-                    ->dateTime('d M Y H:i')
+                    ->date('d M Y')
                     ->sortable(),
             ])
             ->filters([

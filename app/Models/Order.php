@@ -50,4 +50,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function setPaymentStatusAttribute($value)
+    {
+        $this->attributes['payment_status'] = $value;
+        if ($value === 'failed') {
+            $this->attributes['status'] = 'cancelled';
+        }
+    }
 }
