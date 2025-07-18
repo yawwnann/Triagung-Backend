@@ -14,8 +14,8 @@ class UploadTest extends Model
             if (\Illuminate\Support\Str::startsWith($this->gambar_utama, ['http://', 'https://'])) {
                 return $this->gambar_utama;
             }
-            $cloudName = env('CLOUDINARY_CLOUD_NAME');
-            return "https://res.cloudinary.com/{$cloudName}/image/upload/{$this->gambar_utama}";
+            // Sekarang hanya return null jika bukan url
+            return null;
         }
         return null;
     }
@@ -26,8 +26,8 @@ class UploadTest extends Model
             if (\Illuminate\Support\Str::startsWith($this->file, ['http://', 'https://'])) {
                 return $this->file;
             }
-            $cloudName = env('CLOUDINARY_CLOUD_NAME');
-            return "https://res.cloudinary.com/{$cloudName}/image/upload/{$this->file}";
+            // Sekarang hanya return null jika bukan url
+            return null;
         }
         return null;
     }

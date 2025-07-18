@@ -30,7 +30,7 @@ class PengaturanTampilanResource extends Resource
             ->schema([
                 Forms\Components\FileUpload::make('gambar_banner')
                     ->label('Gambar Banner')
-                    ->helperText('Gambar akan diupload otomatis ke Supabase saat simpan.')
+                    ->helperText('Gambar akan diupload otomatis ke Gumlet saat simpan.')
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9')

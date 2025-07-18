@@ -30,7 +30,7 @@ class ProdukResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('kategori_produk_id')
-                    ->relationship('kategoriProduk', 'id')
+                    ->relationship('kategoriProduk', 'nama')
                     ->required(),
                 TextInput::make('nama')
                     ->required()
@@ -56,12 +56,12 @@ class ProdukResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\FileUpload::make('gambar')
-                    ->label('Gambar Produk')
+                Forms\Components\FileUpload::make('gambar_upload')
+                    ->label('Upload Gambar Produk (Cloudinary)')
                     ->image()
-                    ->disk('public')
                     ->nullable()
                     ->columnSpanFull(),
+                
             ]);
     }
 
@@ -69,9 +69,10 @@ class ProdukResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('kategoriProduk.id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('kategoriProduk.nama')
+                    ->label('Kategori')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')

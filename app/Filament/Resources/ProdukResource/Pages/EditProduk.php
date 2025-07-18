@@ -7,7 +7,8 @@ use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
+use App\Helpers\GumletUploader;
 
 class EditProduk extends EditRecord
 {
@@ -22,33 +23,41 @@ class EditProduk extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        Log::info('DEBUG: Masuk mutateFormDataBeforeSave', $data);
-        Log::info('DEBUG: Tipe data gambar', [
-            'type' => isset($data['gambar']) ? gettype($data['gambar']) : null,
-            'class' => (isset($data['gambar']) && is_object($data['gambar'])) ? get_class($data['gambar']) : null
-        ]);
+        Log::info('MULAI_MUTATE_EDIT', $data);
         if (isset($data['gambar']) && $data['gambar'] instanceof \Illuminate\Http\UploadedFile) {
-            $client = new \GuzzleHttp\Client([
-                'base_uri' => env('SUPABASE_URL'),
-                'headers' => [
-                    'apikey' => env('SUPABASE_KEY'),
-                    'Authorization' => 'Bearer ' . env('SUPABASE_KEY'),
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key' => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ],
+                'url' => [
+                    'secure' => true
                 ]
             ]);
-            $file = $data['gambar'];
-            $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $bucket = 'images';
-            $response = $client->post("/storage/v1/object/$bucket/$fileName", [
-                'headers' => [
-                    'Content-Type' => $file->getMimeType(),
-                ],
-                'body' => fopen($file->getPathname(), 'r'),
+            $result = $cloudinary->uploadApi()->upload($data['gambar']->getRealPath(), [
+                'folder' => 'produk'
             ]);
-            if ($response->getStatusCode() === 200 || $response->getStatusCode() === 201) {
-                $data['gambar'] = env('SUPABASE_URL') . "/storage/v1/object/public/$bucket/$fileName";
-            } else {
-                $data['gambar'] = null;
-            }
+            $data['gambar'] = $result['secure_url'] ?? null;
+            @unlink($data['gambar']->getRealPath());
+        } elseif (isset($data['gambar']) && is_string($data['gambar']) && file_exists(storage_path('app/public/' . $data['gambar']))) {
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key' => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+            $result = $cloudinary->uploadApi()->upload(storage_path('app/public/' . $data['gambar']), [
+                'folder' => 'produk'
+            ]);
+            $data['gambar'] = $result['secure_url'] ?? null;
+            @unlink(storage_path('app/public/' . $data['gambar']));
+        } else {
+            Log::info('CLOUDINARY_UPLOAD_SKIP', ['gambar' => $data['gambar'] ?? null]);
         }
         return $data;
     }
