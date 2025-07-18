@@ -30,8 +30,7 @@ class PengaturanTampilanResource extends Resource
             ->schema([
                 Forms\Components\FileUpload::make('gambar_banner')
                     ->label('Gambar Banner')
-                    ->disk('cloudinary')
-                    ->directory('banners')
+                    ->helperText('Gambar akan diupload otomatis ke Supabase saat simpan.')
                     ->image()
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9')
@@ -46,7 +45,6 @@ class PengaturanTampilanResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('gambar_banner')
                     ->label('Gambar Banner')
-                    ->disk('cloudinary')
                     ->height(120)
                     ->width(200),
             ])

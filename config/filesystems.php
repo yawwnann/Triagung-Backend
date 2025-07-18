@@ -32,10 +32,8 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'serve' => true,
+            'root' => storage_path('app'), // <-- Pastikan ini benar
             'throw' => false,
-            'report' => false,
         ],
 
         'public' => [
@@ -59,12 +57,11 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
         'cloudinary' => [
             'driver' => 'cloudinary',
-            'api_key' => env('CLOUDINARY_API_KEY'),
-            'api_secret' => env('CLOUDINARY_API_SECRET'),
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'cloud' => env('CLOUDINARY_CLOUD_NAME'),
+            'key' => env('CLOUDINARY_API_KEY'),
+            'secret' => env('CLOUDINARY_API_SECRET'),
         ],
 
     ],

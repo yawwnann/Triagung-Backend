@@ -58,13 +58,10 @@ class ProdukResource extends Resource
                     ->default(0),
                 Forms\Components\FileUpload::make('gambar')
                     ->label('Gambar Produk')
-                    ->disk('cloudinary')
-                    ->directory('produk')
                     ->image()
-                    ->imageResizeMode('cover')
-                    ->imageCropAspectRatio('1:1')
-                    ->imageResizeTargetWidth('800')
-                    ->imageResizeTargetHeight('800'),
+                    ->disk('public')
+                    ->nullable()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -87,9 +84,9 @@ class ProdukResource extends Resource
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('gambar')
                     ->label('Gambar')
-                    ->disk('cloudinary')
-                    ->height(120)
-                    ->width(200),
+                    ->disk('public')
+                    ->width(120)
+                    ->height(90),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
