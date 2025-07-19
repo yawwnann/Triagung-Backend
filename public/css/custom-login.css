@@ -1,0 +1,110 @@
+/* Custom Login Page Styles */
+body {
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+}
+
+/* Background gradient for login button */
+.bg-gradient {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Hide all navigation and sidebar elements */
+.sidebar,
+nav,
+[role="navigation"],
+.filament-sidebar,
+.filament-main-sidebar,
+.filament-sidebar-nav,
+.filament-sidebar-nav-item,
+.filament-sidebar-nav-group,
+.filament-sidebar-nav-group-label,
+.filament-sidebar-nav-group-items,
+.filament-sidebar-nav-item-label,
+.filament-sidebar-nav-item-icon,
+.filament-sidebar-nav-item-badge,
+.filament-sidebar-nav-item-arrow,
+.filament-sidebar-nav-item-link,
+.filament-sidebar-nav-item-button,
+.filament-sidebar-nav-item-active,
+.filament-sidebar-nav-item-inactive,
+.filament-sidebar-nav-item-collapsed,
+.filament-sidebar-nav-item-expanded,
+.filament-sidebar-nav-item-has-children,
+.filament-sidebar-nav-item-has-children-expanded,
+.filament-sidebar-nav-item-has-children-collapsed,
+.filament-sidebar-nav-item-has-children-active,
+.filament-sidebar-nav-item-has-children-inactive,
+.filament-sidebar-nav-item-has-children-collapsed-active,
+.filament-sidebar-nav-item-has-children-collapsed-inactive,
+.filament-sidebar-nav-item-has-children-expanded-active,
+.filament-sidebar-nav-item-has-children-expanded-inactive {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+}
+
+/* Ensure login form is centered */
+.login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Hide any Filament layout elements */
+.filament-main,
+.filament-main-content,
+.filament-main-sidebar,
+.filament-main-content-sidebar {
+    display: none !important;
+}
+
+/* Ensure full screen background */
+.login-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    z-index: 1;
+}
+
+/* Custom styling for login form elements */
+.login-form input[type="email"],
+.login-form input[type="password"] {
+    background-color: #1f2937 !important;
+    border-color: #4b5563 !important;
+    color: white !important;
+}
+
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.login-form input[type="checkbox"] {
+    background-color: #1f2937 !important;
+    border-color: #4b5563 !important;
+}
+
+/* Ensure the login page takes full screen */
+.filament-login-page {
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%) !important;
+}

@@ -27,4 +27,19 @@ Route::get('/test-auth', function () {
     ]);
 });
 
+// Custom Filament Authentication Routes (if needed)
+// Route::prefix('admin')->group(function () {
+//     Route::get('/login', [App\Http\Controllers\FilamentAuthController::class, 'showLoginForm'])
+//         ->name('filament.admin.auth.login')
+//         ->middleware('guest');
+    
+//     Route::post('/login', [App\Http\Controllers\FilamentAuthController::class, 'login'])
+//         ->name('filament.admin.auth.login.store')
+//         ->middleware('guest');
+    
+//     Route::post('/logout', [App\Http\Controllers\FilamentAuthController::class, 'logout'])
+//         ->name('filament.admin.auth.logout')
+//         ->middleware('auth');
+// });
+
 

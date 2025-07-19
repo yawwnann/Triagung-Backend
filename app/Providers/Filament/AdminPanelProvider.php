@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Trijaya Agung Admin')
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\CustomLogin::class)
             ->colors([
                 'primary' => Color::Emerald,
             ])
@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             // Menemukan halaman (Pages) di direktori App\Filament\Pages
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-
+                \App\Filament\Pages\Auth\CustomLogin::class,
             ])
             // Menemukan widget (Widgets) di direktori App\Filament\Widgets
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -65,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             // Optimizations for Railway deployment
             ->authMiddleware([
-                Authenticate::class,
+                \App\Http\Middleware\AdminOnly::class,
             ])
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()

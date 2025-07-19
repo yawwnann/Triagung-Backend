@@ -46,7 +46,7 @@ class FilamentServiceProvider extends ServiceProvider
                         }
                         return null;
                     } catch (\Exception $e) {
-                        \Log::error('Filament auth error', [
+                        Log::error('Filament auth error', [
                             'message' => $e->getMessage(),
                             'trace' => $e->getTraceAsString()
                         ]);
