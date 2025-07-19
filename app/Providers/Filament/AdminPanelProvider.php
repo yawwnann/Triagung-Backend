@@ -69,9 +69,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
-            ->persistFiltersInSession()
-            ->persistTableFiltersInSession()
-            ->persistTableSortInSession()
+            ->defaultAvatarProvider(\Filament\AvatarProviders\UiAvatarsProvider::class)
         ;
     }
 }
