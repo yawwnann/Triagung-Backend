@@ -70,6 +70,10 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
             ->defaultAvatarProvider(\Filament\AvatarProviders\UiAvatarsProvider::class)
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->assets([
+                'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
+            ])
         ;
     }
 }
