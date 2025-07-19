@@ -63,6 +63,15 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class, // Menonaktifkan komponen ikon Blade
                 DispatchServingFilamentEvent::class, // Mengeluarkan event saat Filament sedang disajikan
             ])
+            // Optimizations for Railway deployment
+            ->authMiddleware([
+                Authenticate::class,
+            ])
+            ->maxContentWidth('full')
+            ->sidebarCollapsibleOnDesktop()
+            ->persistFiltersInSession()
+            ->persistTableFiltersInSession()
+            ->persistTableSortInSession()
         ;
     }
 }
