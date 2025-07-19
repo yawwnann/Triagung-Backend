@@ -1,22 +1,23 @@
 [phases.setup]
-nixPkgs = ['php83', 'php83Extensions.opcache', 'composer']
+nixPkgs = ['php83', 'composer']
 
 [phases.install]
 cmds = ['composer install --no-dev --optimize-autoloader']
 
 [phases.build]
 cmds = [
+  'php artisan config:clear',
+  'php artisan cache:clear',
+  'php artisan view:clear',
+  'php artisan route:clear',
   'php artisan config:cache',
   'php artisan route:cache', 
-  'php artisan view:cache',
-  'php artisan storage:link'
+  'php artisan view:cache'
 ]
 
 [start]
-cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'php artisan serve --host=0.0.0.0 --port=8000'
 
 [variables]
 PHP_MEMORY_LIMIT = "512M"
-PHP_MAX_EXECUTION_TIME = "300"
-PHP_OPCACHE_ENABLE = "1"
-PHP_OPCACHE_MEMORY_CONSUMPTION = "128" 
+PHP_MAX_EXECUTION_TIME = "300" 
