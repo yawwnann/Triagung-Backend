@@ -44,3 +44,12 @@ Route::get('districts', [WilayahController::class, 'districts']);
 
 // Midtrans Webhook Notification
 Route::post('midtrans/notification', [WebhookController::class, 'handle']);
+
+// CORS Test Route
+Route::get('cors-test', function () {
+    return response()->json([
+        'message' => 'CORS is working!',
+        'timestamp' => now(),
+        'origin' => request()->header('Origin')
+    ]);
+});

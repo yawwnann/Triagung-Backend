@@ -27,10 +27,12 @@ class KategoriProdukResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
-                    ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $set('slug', \Illuminate\Support\Str::slug($state));
+                    }),
+                Forms\Components\Hidden::make('slug'),
                 Forms\Components\Textarea::make('deskripsi')
                     ->columnSpanFull(),
             ]);
