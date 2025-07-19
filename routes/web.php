@@ -17,4 +17,14 @@ Route::get('/up', function () {
     ]);
 });
 
+// Test route for debugging
+Route::get('/test-auth', function () {
+    return response()->json([
+        'message' => 'Auth test route working',
+        'session_id' => session()->getId(),
+        'user' => \Illuminate\Support\Facades\Auth::user(),
+        'timestamp' => now()
+    ]);
+});
+
 
