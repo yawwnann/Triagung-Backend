@@ -19,6 +19,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Configure PHP memory limits
+RUN echo "memory_limit = 1G" >> /usr/local/etc/php/conf.d/memory-limit.ini
+RUN echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/memory-limit.ini
+RUN echo "upload_max_filesize = 50M" >> /usr/local/etc/php/conf.d/memory-limit.ini
+RUN echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Set working directory
 WORKDIR /var/www/html
 

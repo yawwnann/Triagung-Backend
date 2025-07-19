@@ -17,41 +17,47 @@ class CreateProduk extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         Log::info('MULAI_MUTATE_CREATE', $data);
-        if (isset($data['gambar']) && $data['gambar'] instanceof \Illuminate\Http\UploadedFile) {
-            $cloudinary = new Cloudinary([
-                'cloud' => [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key' => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ],
-                'url' => [
-                    'secure' => true
-                ]
-            ]);
-            $result = $cloudinary->uploadApi()->upload($data['gambar']->getRealPath(), [
-                'folder' => 'produk'
-            ]);
-            $data['gambar'] = $result['secure_url'] ?? null;
-            @unlink($data['gambar']->getRealPath());
-        } elseif (isset($data['gambar']) && is_string($data['gambar']) && file_exists(storage_path('app/public/' . $data['gambar']))) {
-            $cloudinary = new Cloudinary([
-                'cloud' => [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key' => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ],
-                'url' => [
-                    'secure' => true
-                ]
-            ]);
-            $result = $cloudinary->uploadApi()->upload(storage_path('app/public/' . $data['gambar']), [
-                'folder' => 'produk'
-            ]);
-            $data['gambar'] = $result['secure_url'] ?? null;
-            @unlink(storage_path('app/public/' . $data['gambar']));
+        
+        // Initialize Cloudinary once
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key' => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+            'url' => [
+                'secure' => true
+            ]
+        ]);
+        
+        if (isset($data['gambar_upload']) && $data['gambar_upload'] instanceof \Illuminate\Http\UploadedFile) {
+            try {
+                $result = $cloudinary->uploadApi()->upload($data['gambar_upload']->getRealPath(), [
+                    'folder' => 'produk'
+                ]);
+                $data['gambar'] = $result['secure_url'] ?? null;
+                @unlink($data['gambar_upload']->getRealPath());
+                Log::info('CLOUDINARY_UPLOAD_SUCCESS', ['url' => $data['gambar']]);
+            } catch (\Exception $e) {
+                Log::error('CLOUDINARY_UPLOAD_ERROR', ['error' => $e->getMessage()]);
+                $data['gambar'] = null;
+            }
+        } elseif (isset($data['gambar_upload']) && is_string($data['gambar_upload']) && file_exists(storage_path('app/public/' . $data['gambar_upload']))) {
+            try {
+                $result = $cloudinary->uploadApi()->upload(storage_path('app/public/' . $data['gambar_upload']), [
+                    'folder' => 'produk'
+                ]);
+                $data['gambar'] = $result['secure_url'] ?? null;
+                @unlink(storage_path('app/public/' . $data['gambar_upload']));
+                Log::info('CLOUDINARY_UPLOAD_SUCCESS', ['url' => $data['gambar']]);
+            } catch (\Exception $e) {
+                Log::error('CLOUDINARY_UPLOAD_ERROR', ['error' => $e->getMessage()]);
+                $data['gambar'] = null;
+            }
         } else {
-            Log::info('CLOUDINARY_UPLOAD_SKIP', ['gambar' => $data['gambar'] ?? null]);
+            Log::info('CLOUDINARY_UPLOAD_SKIP', ['gambar_upload' => $data['gambar_upload'] ?? null]);
         }
+        
         return $data;
     }
 }

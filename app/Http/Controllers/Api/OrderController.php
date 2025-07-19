@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Produk;
@@ -13,6 +14,12 @@ use Midtrans\Snap;
 
 class OrderController extends Controller
 {
+    /**
+     * Get user orders (excluding pending/cart)
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function myOrders(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -20,10 +27,16 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
+    /**
+     * Get user cart (pending order)
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function cart(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $cart = Order::with('items.produk')
+        $cart = Order::with('items')
             ->where('user_id', $user->id)
             ->where('status', 'pending')
             ->first();
@@ -31,10 +44,18 @@ class OrderController extends Controller
         return response()->json($cart);
     }
 
+    /**
+     * Store item to cart
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function storeCart(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $request->validate([
+
+        // Validate request
+        $validated = $request->validate([
             'product_id' => 'required|exists:produks,id',
             'quantity' => 'required|integer|min:1',
         ]);
@@ -57,14 +78,14 @@ class OrderController extends Controller
             ]
         );
 
-        $produk = Produk::findOrFail($request->product_id);
+        $produk = Produk::findOrFail($validated['product_id']);
 
         // Cek apakah item sudah ada di keranjang
         $orderItem = $cart->items()->where('product_id', $produk->id)->first();
 
         if ($orderItem) {
             // Jika sudah ada, update kuantitasnya
-            $orderItem->quantity += $request->quantity;
+            $orderItem->quantity += $validated['quantity'];
             $orderItem->subtotal = $orderItem->quantity * $orderItem->price;
             $orderItem->save();
         } else {
@@ -73,8 +94,8 @@ class OrderController extends Controller
                 'product_id' => $produk->id,
                 'product_name' => $produk->nama,
                 'price' => $produk->harga,
-                'quantity' => $request->quantity,
-                'subtotal' => $produk->harga * $request->quantity,
+                'quantity' => $validated['quantity'],
+                'subtotal' => $produk->harga * $validated['quantity'],
             ]);
         }
 
@@ -84,9 +105,16 @@ class OrderController extends Controller
         $cart->grand_total = $total + $cart->shipping_cost + $cart->tax - $cart->discount;
         $cart->save();
 
-        return response()->json($cart->load('items.produk'));
+        return response()->json($cart->load('items'));
     }
 
+    /**
+     * Update cart item quantity
+     * 
+     * @param Request $request
+     * @param int $itemId
+     * @return JsonResponse
+     */
     public function updateCartItem(Request $request, $itemId)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -94,12 +122,13 @@ class OrderController extends Controller
             $q->where('user_id', $user->id)->where('status', 'pending');
         })->findOrFail($itemId);
 
-        $request->validate([
+        // Validate request
+        $validated = $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $item->quantity = $request->quantity;
-        $item->subtotal = $item->price * $request->quantity;
+        $item->quantity = $validated['quantity'];
+        $item->subtotal = $item->price * $validated['quantity'];
         $item->save();
 
         // Update grand_total order
@@ -109,9 +138,16 @@ class OrderController extends Controller
         $order->grand_total = $total + $order->shipping_cost + $order->tax - $order->discount;
         $order->save();
 
-        return response()->json($item->fresh(['order.items.produk']));
+        return response()->json($item->fresh(['order.items']));
     }
 
+    /**
+     * Delete cart item
+     * 
+     * @param Request $request
+     * @param int $itemId
+     * @return JsonResponse
+     */
     public function deleteCartItem(Request $request, $itemId)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -136,20 +172,30 @@ class OrderController extends Controller
         return response()->json(['success' => true]);
     }
 
-    // API checkout cart
+    /**
+     * Checkout cart
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function checkout(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $request->validate([
+
+        // Validate request
+        $validated = $request->validate([
             'address_id' => 'required|exists:addresses,id',
             'notes' => 'nullable|string|max:1000',
         ]);
-        $addressId = $request->address_id;
+
+        $addressId = $validated['address_id'];
+
         // Pastikan address milik user
         $address = $user->addresses()->where('id', $addressId)->first();
         if (!$address) {
             return response()->json(['error' => 'Alamat tidak valid.'], 422);
         }
+
         // Ambil order pending milik user
         $order = Order::where('user_id', $user->id)
             ->where('status', 'pending')
@@ -158,13 +204,15 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json(['error' => 'Tidak ada cart yang bisa di-checkout.'], 404);
         }
+
         // Update address jika berbeda
         if ($order->address_id != $addressId) {
             $order->address_id = $addressId;
         }
+
         // Update notes jika ada
-        if ($request->has('notes')) {
-            $order->notes = $request->notes;
+        if (isset($validated['notes'])) {
+            $order->notes = $validated['notes'];
         }
         $order->status = 'processing';
         $order->created_at = now();
@@ -197,7 +245,13 @@ class OrderController extends Controller
         ]);
     }
 
-    // API untuk melihat detail pesanan
+    /**
+     * Get order detail
+     * 
+     * @param Request $request
+     * @param int $orderId
+     * @return JsonResponse
+     */
     public function orderDetail(Request $request, $orderId)
     {
         $user = JWTAuth::parseToken()->authenticate();

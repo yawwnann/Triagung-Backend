@@ -27,6 +27,12 @@ services:
         networks:
             - laravel-network
         restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    memory: 2G
+                reservations:
+                    memory: 1G
 
     db:
         image: mysql:8.0
