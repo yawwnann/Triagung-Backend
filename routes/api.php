@@ -53,3 +53,8 @@ Route::get('cors-test', function () {
         'origin' => request()->header('Origin')
     ]);
 });
+
+// Fallback OPTIONS route for CORS preflight
+Route::options('/{any}', function () {
+    return response()->json(['status' => 'ok']);
+})->where('any', '.*');
