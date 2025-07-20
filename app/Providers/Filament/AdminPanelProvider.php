@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Trijaya Agung Admin')
             ->id('admin')
             ->path('admin')
-            // ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->login(\App\Filament\Pages\Auth\CustomLogin::class)
             ->colors([
                 'primary' => Color::Emerald,
             ])
