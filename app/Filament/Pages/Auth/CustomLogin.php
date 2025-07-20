@@ -16,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 class CustomLogin extends Page
 {
     protected static ?string $navigationIcon = null;
-    protected static string $view = 'filament.pages.login';
+    // protected static string $view = 'filament.pages.login';
     protected static bool $shouldRegisterNavigation = false;
     protected static ?string $title = 'Login';
 
