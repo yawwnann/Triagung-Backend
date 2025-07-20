@@ -1,8 +1,5 @@
 @echo off
 
-REM Set default port if not provided
-if "%PORT%"=="" set PORT=8000
-
 REM Clear caches
 php artisan config:clear
 php artisan view:clear
@@ -11,5 +8,5 @@ php artisan cache:clear
 REM Run migrations
 php artisan migrate --force
 
-REM Start the server with explicit port
-php artisan serve --host=0.0.0.0 --port=%PORT% 
+REM Start the server on port 8000
+php artisan serve --host=0.0.0.0 --port=8000 

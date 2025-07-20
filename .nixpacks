@@ -18,7 +18,7 @@ cmds = ['composer install --no-dev --optimize-autoloader']
 cmds = ['php artisan config:cache', 'php artisan route:cache', 'php artisan view:cache']
 
 [start]
-cmd = 'chmod +x deploy.sh && ./deploy.sh'
+cmd = 'php artisan serve --host=0.0.0.0 --port=8000'
 
 [variables]
 PHP_MEMORY_LIMIT = "512M"

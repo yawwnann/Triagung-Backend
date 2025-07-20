@@ -2,11 +2,6 @@
 
 echo "🚀 Starting Railway Deployment..."
 
-# Set default port
-if [ -z "$PORT" ]; then
-    PORT=8000
-fi
-
 echo "📦 Installing dependencies..."
 composer install --no-dev --optimize-autoloader
 
@@ -29,5 +24,5 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate
 fi
 
-echo "🌐 Starting server on port $PORT..."
-php artisan serve --host=0.0.0.0 --port=$PORT 
+echo "🌐 Starting server on port 8000..."
+php artisan serve --host=0.0.0.0 --port=8000 
