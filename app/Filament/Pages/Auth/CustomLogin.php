@@ -57,4 +57,9 @@ class CustomLogin extends Page
             $this->addError('email', 'An error occurred during login. Please try again.');
         }
     }
+
+    public function hasLogo()
+    {
+        return true;
+    }
 }
