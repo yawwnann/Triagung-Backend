@@ -25,15 +25,7 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
-        // Ensure API routes always return JSON
-        Response::macro('api', function ($data, $status = 200) {
-            return Response::json($data, $status, [
-                'Content-Type' => 'application/json',
-                'Access-Control-Allow-Origin' => '*',
-                'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With'
-            ]);
-        });
+        // Hapus macro Response::api agar tidak override header CORS
 
         // Handle exceptions for API routes
         $this->app->singleton('Illuminate\Contracts\Debug\ExceptionHandler', function ($app) {
