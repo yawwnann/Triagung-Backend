@@ -6,10 +6,17 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $role
+ */
 class CustomLogin extends Page
 {
     protected static ?string $navigationIcon = null;
-    protected static string $view = 'filament.pages.custom-login';
+    protected static string $view = 'filament.admin.pages.auth.login';
     protected static bool $shouldRegisterNavigation = false;
     protected static ?string $title = 'Login';
 
