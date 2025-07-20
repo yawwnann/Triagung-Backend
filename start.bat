@@ -11,5 +11,5 @@ php artisan cache:clear
 REM Run migrations
 php artisan migrate --force
 
-REM Start the server
+REM Start the server with explicit port
 php artisan serve --host=0.0.0.0 --port=%PORT% 
