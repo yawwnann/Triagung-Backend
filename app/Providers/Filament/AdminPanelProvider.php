@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Trijaya Agung Admin')
             ->id('admin')
             ->path('admin')
-            ->login(\App\Filament\Pages\Auth\CustomLogin::class)
+            ->login()
             ->colors([
                 'primary' => Color::Emerald,
             ])
@@ -43,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             // Menemukan halaman (Pages) di direktori App\Filament\Pages
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                // \App\Filament\Pages\Auth\CustomLogin::class,
+
             ])
             // Menemukan widget (Widgets) di direktori App\Filament\Widgets
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -62,19 +62,6 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class, // Mengganti binding model di rute
                 DisableBladeIconComponents::class, // Menonaktifkan komponen ikon Blade
                 DispatchServingFilamentEvent::class, // Mengeluarkan event saat Filament sedang disajikan
-            ])
-            // Optimizations for Railway deployment
-            ->authMiddleware([
-                Authenticate::class,
-            ])
-            ->authGuard('web')
-
-            ->maxContentWidth('full')
-            ->sidebarCollapsibleOnDesktop()
-            ->defaultAvatarProvider(\Filament\AvatarProviders\UiAvatarsProvider::class)
-            ->viteTheme('resources/css/filament/admin/theme.css')
-            ->assets([
-                'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
             ])
         ;
     }
