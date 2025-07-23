@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CekRoleAdmin;
 use App\Http\Controllers\SupabaseUploadController;
-use App\Filament\Pages\Auth\CustomLogin;
 
 // Health check route for Railway
 Route::get('/up', function () {
