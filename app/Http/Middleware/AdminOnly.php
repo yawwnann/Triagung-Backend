@@ -18,6 +18,9 @@ class AdminOnly
     {
         // Check if user is authenticated
         if (!Auth::check()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
             return redirect()->route('filament.admin.auth.login');
         }
 
@@ -25,6 +28,9 @@ class AdminOnly
         $user = Auth::user();
         if ($user->role !== 'admin') {
             Auth::logout();
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['error' => 'Forbidden'], 403);
+            }
             return redirect()->route('filament.admin.auth.login')
                 ->withErrors(['email' => 'Access denied. Admin privileges required.']);
         }

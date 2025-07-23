@@ -12,6 +12,9 @@ class CekRoleAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['error' => 'Forbidden'], 403);
+            }
             abort(403, 'Akses hanya untuk admin!');
         }
         return $next($request);
